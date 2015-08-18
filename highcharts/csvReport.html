@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+  .ui-slider-range:{
+    background-color: green;
+  }
+</style>
+
+<title>Title of the document</title>
+</head>
+
+<body>
+
+
+
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+<div id="sliderRange"></div>
+<div id="min"></div>
+<div id="max"></div>
+
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/linq.js/2.2.0.2/linq.js"></script>
+<script src="csvToJson.js"></script>
+
+
+<script>
+
+  var formatedArray = [];
+
+  (function(){
+
+    var key = 'kp';
+
+    $(function () {
+
+      $.get("/Users/joyeuxalexandre/Downloads/GSP_Scheduling/GSP_Scheduling.csv",
+      function(){
+        console.log('get');
+      }).done(function(csv){
+
+        var csvJson = convertCsvModule.convertToJson(csv);
+
+        var pks = dataFormating.getCursors(csvJson, key);
+
+        var series = dataFormating.getSeries(csvJson, key);
+
+        var formatedValues = dataFormating.setData(csvJson, key);
+
+        var test = dataFormating.queryData(10,20, key);
+
+        alert(series);
+
+        sliderModule.init(pks, "#sliderRange");
+
+        convertCsvModule.convertToJson(csv);
+      }).fail(function(){
+        alert('fail');
+      });
+
+
+
+      // Create the chart
+      $('#container').highcharts({
+          chart: {
+              type: 'column'
+          },
+          title: {
+              text: 'Browser market shares. January, 2015 to May, 2015'
+          },
+          subtitle: {
+              text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
+          },
+          xAxis: {
+              type: 'category'
+          },
+          yAxis: {
+              title: {
+                  text: 'Total percent market share'
+              }
+
+          },
+          legend: {
+              enabled: false
+          },
+          plotOptions: {
+              series: {
+                  borderWidth: 0,
+                  dataLabels: {
+                      enabled: true,
+                      format: '{point.y:.1f}%'
+                  }
+              }
+          },
+
+          tooltip: {
+              headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+              pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+          },
+
+          series: [{
+              name: "Brands",
+              colorByPoint: true,
+              data: [{
+                  name: "Microsoft Internet Explorer",
+                  y: 56.33,
+                  drilldown: "Microsoft Internet Explorer"
+              }, {
+                  name: "Chrome",
+                  y: 24.03,
+                  drilldown: "Chrome"
+              }, {
+                  name: "Firefox",
+                  y: 10.38,
+                  drilldown: "Firefox"
+              }, {
+                  name: "Safari",
+                  y: 4.77,
+                  drilldown: "Safari"
+              }, {
+                  name: "Opera",
+                  y: 0.91,
+                  drilldown: "Opera"
+              }, {
+                  name: "Proprietary or Undetectable",
+                  y: 0.2,
+                  drilldown: null
+              }]
+          }],
+          drilldown: {
+              series: [{
+                  name: "Microsoft Internet Explorer",
+                  id: "Microsoft Internet Explorer",
+                  data: [
+                      [
+                          "v11.0",
+                          24.13
+                      ],
+                      [
+                          "v8.0",
+                          17.2
+                      ],
+                      [
+                          "v9.0",
+                          8.11
+                      ],
+                      [
+                          "v10.0",
+                          5.33
+                      ],
+                      [
+                          "v6.0",
+                          1.06
+                      ],
+                      [
+                          "v7.0",
+                          0.5
+                      ]
+                  ]
+              }, {
+                  name: "Chrome",
+                  id: "Chrome",
+                  data: [
+                      [
+                          "v40.0",
+                          5
+                      ],
+                      [
+                          "v41.0",
+                          4.32
+                      ],
+                      [
+                          "v42.0",
+                          3.68
+                      ],
+                      [
+                          "v39.0",
+                          2.96
+                      ],
+                      [
+                          "v36.0",
+                          2.53
+                      ],
+                      [
+                          "v43.0",
+                          1.45
+                      ],
+                      [
+                          "v31.0",
+                          1.24
+                      ],
+                      [
+                          "v35.0",
+                          0.85
+                      ],
+                      [
+                          "v38.0",
+                          0.6
+                      ],
+                      [
+                          "v32.0",
+                          0.55
+                      ],
+                      [
+                          "v37.0",
+                          0.38
+                      ],
+                      [
+                          "v33.0",
+                          0.19
+                      ],
+                      [
+                          "v34.0",
+                          0.14
+                      ],
+                      [
+                          "v30.0",
+                          0.14
+                      ]
+                  ]
+              }, {
+                  name: "Firefox",
+                  id: "Firefox",
+                  data: [
+                      [
+                          "v35",
+                          2.76
+                      ],
+                      [
+                          "v36",
+                          2.32
+                      ],
+                      [
+                          "v37",
+                          2.31
+                      ],
+                      [
+                          "v34",
+                          1.27
+                      ],
+                      [
+                          "v38",
+                          1.02
+                      ],
+                      [
+                          "v31",
+                          0.33
+                      ],
+                      [
+                          "v33",
+                          0.22
+                      ],
+                      [
+                          "v32",
+                          0.15
+                      ]
+                  ]
+              }, {
+                  name: "Safari",
+                  id: "Safari",
+                  data: [
+                      [
+                          "v8.0",
+                          2.56
+                      ],
+                      [
+                          "v7.1",
+                          0.77
+                      ],
+                      [
+                          "v5.1",
+                          0.42
+                      ],
+                      [
+                          "v5.0",
+                          0.3
+                      ],
+                      [
+                          "v6.1",
+                          0.29
+                      ],
+                      [
+                          "v7.0",
+                          0.26
+                      ],
+                      [
+                          "v6.2",
+                          0.17
+                      ]
+                  ]
+              }, {
+                  name: "Opera",
+                  id: "Opera",
+                  data: [
+                      [
+                          "v12.x",
+                          0.34
+                      ],
+                      [
+                          "v28",
+                          0.24
+                      ],
+                      [
+                          "v27",
+                          0.17
+                      ],
+                      [
+                          "v29",
+                          0.16
+                      ]
+                  ]
+              }]
+          }
+      });
+
+  });
+
+
+
+
+  }());
+
+
+
+
+var convertCsvModule = (function(){
+
+  var convertCsv = {};
+
+  var _convertToJson = function(text){
+    return _(text,',').CSVtoJSON();
+  };
+
+  convertCsv.convertToJson = _convertToJson;
+
+  return convertCsv;
+
+}());
+
+var dataFormating = (function(){
+
+  var df = {};
+
+  var _getCursors = function(data, key){
+    return Enumerable.From(data)
+    .Select(function(x){return Number(x.kp)})
+    .OrderBy()
+    .ToArray();
+  };
+
+  var _getMin = function(data){
+    return Enumerable.From(data).Min();
+  };
+
+  var _getMax = function(data){
+    return Enumerable.From(data).Max();
+  }
+
+  var _getSeries = function(data, key){
+
+    var series = [];
+
+    if(data.length > 0){
+      var object = data[0];
+      for (var property in object) {
+        if (object.hasOwnProperty(property) && property !== key) {
+            series.push(property);
+        }
+      }
+    }
+
+    return series;
+
+  }
+
+  var _queryData = function(min, max, key){
+
+    Enumerable.From(formatedArray)
+    .Where('$.' + key + ' >= ' + min + ' && $.' + key + ' <= ' + max)
+    .Select()
+    .ToArray();
+
+  }
+
+  var _setData = function(data, key){
+
+    for(var row in data){
+      if(!isNaN(data[row][key])){
+        var formatedData = {};
+        formatedData[key] = Number(data[row][key]);
+        formatedData.data = [];
+        for(var index in data[row]){
+            var formatedValue = {};
+            if(index !== key){
+              formatedValue.name = index;
+              formatedValue.value = !isNaN(data[row][index]) ? Number(data[row][index]) : 0;
+              formatedData.data.push(formatedValue);
+            }
+          }
+        formatedArray.push(formatedData);
+      }
+    }
+  }
+
+  df.getCursors = _getCursors;
+  df.getMin = _getMin;
+  df.getMax = _getMax;
+  df.getSeries = _getSeries;
+  df.queryData = _queryData;
+  df.setData = _setData;
+
+  return df;
+
+}());
+
+var chartModule = (function(){
+
+  var chart = {};
+
+  var _init = function(init, elementId){
+
+  }
+
+  var _updateChart = function(min, max){
+
+  };
+
+  chart.updateChart = _updateChart;
+  chart.init = _init;
+
+  return chart;
+
+})();
+
+
+var sliderModule = (function(){
+
+  var slider = {};
+
+  var _init = function(cursors, elementId){
+
+    $(elementId).slider({
+        min: 0,
+        max: cursors.length - 1,
+        range: true,
+        values: [dataFormating.getMin(cursors), dataFormating.getMax(cursors)],
+        slide: function(event, ui) {
+
+            chartModule.updateChart(cursors[ui.values[0]], cursors[ui.values[1]]);
+
+            console.log('kp: ' + cursors[ui.values[0]] + ' - ' + cursors[ui.values[1]]);
+            var delay = function() {
+                var handleIndex = $(ui.handle).data('index.uiSliderHandle');
+                var label = handleIndex == 0 ? '#min' : '#max';
+                $(label).html('$' + ui.value).position({
+                    my: 'center top',
+                    at: 'center bottom',
+                    of: ui.handle,
+                    offset: "0, 10"
+                });
+            };
+
+            // wait for the ui.handle to set its position
+            setTimeout(delay, 5);
+        }
+    });
+
+    _initLabels();
+
+
+  };
+
+  var _initLabels = function(elementId){
+    $('#min').html('$' + $(elementId).slider('values', 0)).position({
+      my: 'center top',
+      at: 'center bottom',
+      of: $('#slider a:eq(0)'),
+      offset: "0, 10"
+  });
+
+  $('#max').html('$' + $(elementId).slider('values', 1)).position({
+      my: 'center top',
+      at: 'center bottom',
+      of: $('#slider a:eq(1)'),
+      offset: "0, 10"
+  });
+  };
+
+
+  slider.init = _init;
+
+  return slider;
+
+}());
+
+
+
+
+
+
+</script>
+
+
+</html>
